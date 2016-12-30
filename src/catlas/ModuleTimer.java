@@ -20,8 +20,8 @@ public class ModuleTimer extends Module implements Runnable {
     Queue<MessageWithPriority> mqueue;
     Thread timerThread;
     @Override
-    public void init(Executor tex){
-        super.init(tex);
+    public void init(){
+        super.init();
         mqueue = new PriorityQueue<MessageWithPriority>(10, new MessageWithPriorityComparator());
         timerThread = new Thread(this);
         timerThread.start();

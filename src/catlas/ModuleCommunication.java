@@ -11,12 +11,12 @@ public class ModuleCommunication extends Module {
     static String name = "communication";
     static ModuleCommunication instance = new ModuleCommunication();
     Thread serverThread;
-    public void init(Executor tex, int port) throws SocketException {
-        ModuleUdpServer.getInstance().init(Main.nextExecutor(), port);
-        ModuleUdpSender.getInstance().init(Main.nextExecutor());
+    public void init(int port) throws SocketException {
+        super.init();
+        ModuleUdpServer.getInstance().init(port);
+        ModuleUdpSender.getInstance().init();
         serverThread = new Thread(ModuleUdpServer.getInstance());
         serverThread.start();
-        super.init(tex);
     }
     
     public static ModuleCommunication getInstance(){

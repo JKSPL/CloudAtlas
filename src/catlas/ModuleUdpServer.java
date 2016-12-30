@@ -18,8 +18,8 @@ public class ModuleUdpServer extends Module implements Runnable {
     static ModuleUdpServer instance = new ModuleUdpServer();
     DatagramSocket serverSocket;
     byte[] receiveData = new byte[1500];
-    public void init(Executor tex, int port) throws SocketException {
-        super.init(tex);
+    public void init(int port) throws SocketException {
+        super.init();
         serverSocket = new DatagramSocket(port);
         debug("listening on port: " + Integer.toString(port));
     }

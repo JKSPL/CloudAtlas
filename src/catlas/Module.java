@@ -13,6 +13,11 @@ public abstract class Module {
     public final String name;
     public Executor ex;
     
+    public void init(){
+        ex = Main.nextExecutor();
+        ex.addModule(this);
+    }
+    
     public void init(Executor tex){
         ex = tex;
         ex.addModule(this);

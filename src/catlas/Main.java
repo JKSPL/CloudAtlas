@@ -59,11 +59,11 @@ public class Main {
     }
     static boolean initModules(){
         if(enabledModulesNames.contains(ModuleTimer.name)){
-            ModuleTimer.getInstance().init(nextExecutor());
+            ModuleTimer.getInstance().init();
         }
         if(enabledModulesNames.contains(ModuleCommunication.name)){
             try {
-                ModuleCommunication.getInstance().init(nextExecutor(), Integer.parseInt(p.getProperty("server_port", "1234")));
+                ModuleCommunication.getInstance().init(Integer.parseInt(p.getProperty("server_port", "1234")));
             } catch (SocketException e) {
                 e.printStackTrace();
                 return false;
