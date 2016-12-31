@@ -16,7 +16,6 @@ public class Main {
     static int executorIdx = 0;
     static HashSet<String> enabledModulesNames = new HashSet<String>();
     static String configFileName;
-    static Properties p;
     static boolean readCommandLines(String[] args){
         Options options = new Options();
         Option optionExecutorsCo = Option.builder("e")
@@ -63,7 +62,7 @@ public class Main {
         }
         if(enabledModulesNames.contains(ModuleCommunication.name)){
             try {
-                ModuleCommunication.getInstance().init(Integer.parseInt(p.getProperty("server_port", "1234")));
+                ModuleCommunication.getInstance().init(Integer.parseInt(Util.p.getProperty("server_port", "1234")));
             } catch (SocketException e) {
                 e.printStackTrace();
                 return false;
@@ -82,12 +81,12 @@ public class Main {
         return true;
     }
     static boolean readConfig(){
-        p = new Properties();
+        Util.p = new Properties();
         InputStream input = null;
         boolean flag = true;
         try {
             input = new FileInputStream(configFileName);
-            p.load(input);
+            Util.p.load(input);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             flag = false;

@@ -1,12 +1,14 @@
 package catlas;
 
 import java.util.HashMap;
+import java.util.Properties;
 
 /**
  * Created by julek on 29-Dec-16.
  */
 public class Util {
     static HashMap<Integer, Module> hmapModules = new HashMap<>();
+    public static Properties p;
     public static int genId(String s){
         long mod = 1000000007;
         long pot = 401;
