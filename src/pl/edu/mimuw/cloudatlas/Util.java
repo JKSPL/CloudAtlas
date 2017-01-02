@@ -1,4 +1,4 @@
-package catlas;
+package pl.edu.mimuw.cloudatlas;
 
 import java.util.HashMap;
 import java.util.Properties;

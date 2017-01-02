@@ -1,4 +1,4 @@
-package catlas;
+package pl.edu.mimuw.cloudatlas;
 
 import java.io.File;
 
@@ -6,8 +6,6 @@ import java.lang.management.ManagementFactory;
 import java.util.ArrayDeque;
 
 import com.sun.management.OperatingSystemMXBean;
-
-import static sun.management.ManagementFactoryHelper.getOperatingSystemMXBean;
 
 /**
  * Created by julek on 30-Dec-16.

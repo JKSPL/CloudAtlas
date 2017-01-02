@@ -1,9 +1,8 @@
-package catlas;
+package pl.edu.mimuw.cloudatlas;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 
-import javax.xml.crypto.Data;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;

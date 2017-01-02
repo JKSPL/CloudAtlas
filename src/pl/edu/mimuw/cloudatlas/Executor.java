@@ -1,13 +1,9 @@
-package catlas;
+package pl.edu.mimuw.cloudatlas;
 
 import com.esotericsoftware.kryo.Kryo;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.concurrent.*;
-
-import static com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type.Int;
 
 /**
  * Created by julek on 28-Dec-16.

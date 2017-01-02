@@ -1,10 +1,8 @@
-package catlas;
+package pl.edu.mimuw.cloudatlas;
 
 import java.util.Date;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.PriorityBlockingQueue;
 
 import static java.lang.Long.max;
 

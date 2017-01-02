@@ -1,4 +1,4 @@
-package catlas;
+package pl.edu.mimuw.cloudatlas;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoSerializable;

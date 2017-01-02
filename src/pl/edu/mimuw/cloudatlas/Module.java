@@ -1,9 +1,4 @@
-package catlas;
-
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.KryoSerializable;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
+package pl.edu.mimuw.cloudatlas;
 
 /**
  * Created by julek on 29-Dec-16.

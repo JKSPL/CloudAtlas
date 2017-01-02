@@ -1,4 +1,4 @@
-package catlas;
+package pl.edu.mimuw.cloudatlas;
 
 /**
  * Created by julek on 30-Dec-16.

@@ -1,6 +1,4 @@
-package catlas;
-
-import jdk.nashorn.internal.codegen.CompilerConstants;
+package pl.edu.mimuw.cloudatlas;
 
 /**
  * Created by julek on 29-Dec-16.

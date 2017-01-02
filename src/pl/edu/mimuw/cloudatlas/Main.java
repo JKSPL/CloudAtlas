@@ -1,6 +1,5 @@
-package catlas;
+package pl.edu.mimuw.cloudatlas;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.commons.cli.*;
 
 import java.io.*;

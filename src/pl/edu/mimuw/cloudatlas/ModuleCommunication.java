@@ -1,8 +1,6 @@
-package catlas;
+package pl.edu.mimuw.cloudatlas;
 
-import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.PriorityQueue;
 
 /**
  * Created by julek on 29-Dec-16.
