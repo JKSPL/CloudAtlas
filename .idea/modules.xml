@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CloudAtlas.iml" filepath="$PROJECT_DIR$/CloudAtlas.iml" />
-      <module fileurl="file://$PROJECT_DIR$/interpreter/interpreter.iml" filepath="$PROJECT_DIR$/interpreter/interpreter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Fetcher/Fetcher.iml" filepath="$PROJECT_DIR$/Fetcher/Fetcher.iml" />
     </modules>
   </component>
 </project>

@@ -10,7 +10,7 @@ import com.sun.management.OperatingSystemMXBean;
 /**
  * Created by julek on 30-Dec-16.
  */
-public class ModuleSystemInfo extends Module {
+public class ModuleSystemInfo {
     static String name = "systeminfo";
     static ModuleSystemInfo instance = new ModuleSystemInfo();
     OperatingSystemMXBean osMXBean;
@@ -30,12 +30,8 @@ public class ModuleSystemInfo extends Module {
     ArrayDeque<Double> loads = new ArrayDeque<>();
     int maxDequeMembers;
     Double cpu_load_sum = 0.0;
-    protected ModuleSystemInfo() {
-        super(name);
-    }
     
     public void init(){
-        super.init();
         osMXBean = (com.sun.management.OperatingSystemMXBean) ManagementFactory
                 .getOperatingSystemMXBean();
         maxDequeMembers = Integer.max(1, Integer.parseInt(Util.p.getProperty("cpuloadgatherunits", "1")));
