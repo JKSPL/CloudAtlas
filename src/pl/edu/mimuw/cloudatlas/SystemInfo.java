@@ -1,3 +1,5 @@
+package pl.edu.mimuw.cloudatlas;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

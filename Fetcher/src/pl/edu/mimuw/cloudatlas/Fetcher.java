@@ -1,3 +1,5 @@
+package pl.edu.mimuw.cloudatlas;
+
 import org.apache.commons.cli.*;
 
 import java.io.FileInputStream;
@@ -23,21 +25,20 @@ public class Fetcher {
         }
         if(
                 !readCommandLines(args)
-                || readConfig())
+                || !readConfig())
         {
             return;
         }
         UbuntuComputerSystemInfo object = new UbuntuComputerSystemInfo();
+        object.start();
         try {
             SystemInfo stub = (SystemInfo) UnicastRemoteObject.exportObject(object, Integer.parseInt(properties.getProperty("port", "0")));
             Registry registry = LocateRegistry.getRegistry();
-            registry.rebind("SystemInfo", stub);
-            System.out.println("UbuntuComputerSystemInfo bound");
+            registry.rebind("pl.edu.mimuw.cloudatlas.SystemInfo", stub);
+            System.out.println("pl.edu.mimuw.cloudatlas.UbuntuComputerSystemInfo bound");
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        object.start();
-        
     }
     
     static boolean readCommandLines(String[] args){

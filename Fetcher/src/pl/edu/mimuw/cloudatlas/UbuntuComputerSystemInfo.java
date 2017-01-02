@@ -1,3 +1,5 @@
+package pl.edu.mimuw.cloudatlas;
+
 import com.sun.management.OperatingSystemMXBean;
 
 import java.io.File;
