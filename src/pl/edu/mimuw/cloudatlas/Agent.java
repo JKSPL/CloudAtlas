@@ -4,11 +4,13 @@ import org.apache.commons.cli.*;
 
 import java.io.*;
 import java.net.SocketException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.HashSet;
 import java.util.Properties;
 
 //import org.apache.commons.cli.*;
-public class Main {
+public class Agent {
     static Executor[] runningExecutors;
     static Thread[] threadsExecutors;
     static int executorsCo;
@@ -56,17 +58,14 @@ public class Main {
         return runningExecutors[executorIdx++];
     }
     static boolean initModules(){
-        if(enabledModulesNames.contains(ModuleTimer.name)){
-            ModuleTimer.getInstance().init();
+        ModuleTimer.getInstance().init();
+        try {
+            ModuleCommunication.getInstance().init(Integer.parseInt(Util.p.getProperty("server_port", "1234")));
+        } catch (SocketException e) {
+            e.printStackTrace();
+            return false;
         }
-        if(enabledModulesNames.contains(ModuleCommunication.name)){
-            try {
-                ModuleCommunication.getInstance().init(Integer.parseInt(Util.p.getProperty("server_port", "1234")));
-            } catch (SocketException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
+        ModuleSystemInfo.getInstance().init();
         return true;
     }
     static boolean initExecutors(){
@@ -105,6 +104,9 @@ public class Main {
         return flag; 
     }
     public static void main(String[] args) {
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new SecurityManager());
+        }
         if(
                 !readCommandLines(args) 
                 || !readConfig() 
@@ -116,6 +118,11 @@ public class Main {
         for(int i = 0; i < executorsCo; i++){
             threadsExecutors[i].start();
         }
+
+        //System.out.println(ModuleTimer.getInstance() == null);
+        //System.out.println(ModuleTimer.getInstance().ex == null);
+        //MessageCallback m = new MessageCallback(ModuleTimer.getInstance(), ModuleTimer.getInstance(), ModuleTimer.MSG_CALLBACK_PERIODIC, new CallbackPrint() ,1000);
+        //Module.sendMessage(m);
         /*for(int i = 0; i < 1000; i++){
             MessageCallback m = new MessageCallback(ModuleCommunication.getInstance(), ModuleTimer.getInstance(), ModuleTimer.MSG_CALLBACK_SECONDS, new CallbackPrint(), 3000 + i * 500);
             MessageOverNetwork m2 = new MessageOverNetwork(m, "127.0.0.1", 8127, ModuleUdpSender.MSG_SEND_MESSAGE) ;

@@ -11,6 +11,7 @@ import static java.lang.Long.max;
  */
 public class ModuleTimer extends Module implements Runnable {
     public static int MSG_CALLBACK_SECONDS = 1;
+    public static int MSG_CALLBACK_PERIODIC = 2;
     
     public static String name = "timer";
     private static ModuleTimer instance = new ModuleTimer();
@@ -19,6 +20,7 @@ public class ModuleTimer extends Module implements Runnable {
     Thread timerThread;
     @Override
     public void init(){
+        System.out.println("inited");
         super.init();
         mqueue = new PriorityQueue<MessageWithPriority>(10, new MessageWithPriorityComparator());
         timerThread = new Thread(this);
@@ -33,7 +35,7 @@ public class ModuleTimer extends Module implements Runnable {
     @Override
     public void receiveMessage(Message m) {
         synchronized (this){
-            if(m.messageType == MSG_CALLBACK_SECONDS){
+            if(m.messageType == MSG_CALLBACK_SECONDS || m.messageType == MSG_CALLBACK_PERIODIC){
                 MessageCallback tm = (MessageCallback) m;
                 mqueue.add(new MessageWithPriority(new Date().getTime() + tm.delay, m));
                 notify();
@@ -67,6 +69,11 @@ public class ModuleTimer extends Module implements Runnable {
                 };
                 for(MessageWithPriority m : q){
                     ((MessageCallback)m.m).toCall.launch();
+                    if(m.m.messageType == MSG_CALLBACK_PERIODIC){
+                        synchronized (this){
+                            mqueue.add(new MessageWithPriority(m.priority + ((MessageCallback)m.m).delay, m.m));
+                        }
+                    }
                 }
                 q.clear();
             } catch (InterruptedException e) {

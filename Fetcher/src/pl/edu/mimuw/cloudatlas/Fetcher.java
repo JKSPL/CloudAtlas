@@ -34,8 +34,8 @@ public class Fetcher {
         try {
             SystemInfo stub = (SystemInfo) UnicastRemoteObject.exportObject(object, Integer.parseInt(properties.getProperty("port", "0")));
             Registry registry = LocateRegistry.getRegistry();
-            registry.rebind("pl.edu.mimuw.cloudatlas.SystemInfo", stub);
-            System.out.println("pl.edu.mimuw.cloudatlas.UbuntuComputerSystemInfo bound");
+            registry.rebind("SystemInfo", stub);
+            System.out.println("SystemInfo bound");
         } catch (RemoteException e) {
             e.printStackTrace();
         }

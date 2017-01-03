@@ -20,12 +20,12 @@ public class Executor implements Runnable {
         messageQueue = new LinkedBlockingQueue<>();
     }
     public void run(){
-        System.out.println("Executor nr " + Integer.toString(id) + " starting");
+        //System.out.println("Executor nr " + Integer.toString(id) + " starting");
         while(true){
             try {
                 Message m = messageQueue.take();
                 assert m.getRecipient().ex != null;
-                System.out.println("Executor nr " + id + " giving message to " + m.getRecipient().name);
+                //System.out.println("Executor nr " + id + " giving message to " + m.getRecipient().name);
                 m.getRecipient().receiveMessage(m);
             } catch (InterruptedException e) {
                 System.out.println("Executor nr " + Integer.toString(id) + " finished");

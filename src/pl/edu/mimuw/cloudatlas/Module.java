@@ -9,7 +9,7 @@ public abstract class Module {
     public Executor ex;
     
     public void init(){
-        ex = Main.nextExecutor();
+        ex = Agent.nextExecutor();
         ex.addModule(this);
     }
     

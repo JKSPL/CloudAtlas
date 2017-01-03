@@ -1,21 +1,20 @@
 package pl.edu.mimuw.cloudatlas;
 
 import com.sun.management.OperatingSystemMXBean;
-import jdk.nashorn.internal.runtime.regexp.joni.Matcher;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
-import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.regex.Pattern;
+
+import static java.lang.Thread.sleep;
 
 /**
  * Created by julek on 02-Jan-17.
  */
-public class UbuntuComputerSystemInfo implements SystemInfo, Runnable {
+public class    UbuntuComputerSystemInfo implements SystemInfo, Runnable {
     double cpu_load;
     long free_disk;
     long total_disk;
@@ -29,19 +28,14 @@ public class UbuntuComputerSystemInfo implements SystemInfo, Runnable {
     long logged_users;
     String[] dns_names;
 
-    ArrayDeque<Double> loads = new ArrayDeque<>();
-    int maxDequeMembers;
-    Double cpu_load_sum = 0.0;
-
     OperatingSystemMXBean osMXBean;
-    long delay;
+    long updateInterval;
     Thread updateThread;
 
     UbuntuComputerSystemInfo(){
         osMXBean = (com.sun.management.OperatingSystemMXBean) ManagementFactory
                 .getOperatingSystemMXBean();
-        maxDequeMembers = Integer.max(1, Integer.parseInt(Fetcher.properties.getProperty("cpuloadgatherunits", "3")));
-        delay = Integer.min(500, Integer.parseInt(Fetcher.properties.getProperty("updateinterval", "3000")));
+        updateInterval = Integer.min(500, Integer.parseInt(Fetcher.properties.getProperty("updateinterval", "3000")));
         updateThread = new Thread(this);
         update();
     }
@@ -110,12 +104,7 @@ public class UbuntuComputerSystemInfo implements SystemInfo, Runnable {
         return dns_names;
     }
     synchronized void update(){
-        double tcpu_load = osMXBean.getSystemCpuLoad();
-        if(loads.size() >= maxDequeMembers){
-            cpu_load_sum -= loads.pop();
-            cpu_load_sum += tcpu_load;
-        }
-        cpu_load = cpu_load_sum / tcpu_load; 
+        cpu_load = osMXBean.getSystemCpuLoad();
         File[] roots = File.listRoots();
         free_disk = 0;
         total_disk = 0;
@@ -154,11 +143,11 @@ public class UbuntuComputerSystemInfo implements SystemInfo, Runnable {
         return lines;
     }
     @Override
-    synchronized public void run() {
+    public void run() {
         try{
             while(true){
                 update();
-                wait(3000);
+                sleep(updateInterval);
             }
         } catch (InterruptedException e) {
             System.out.println("close");
