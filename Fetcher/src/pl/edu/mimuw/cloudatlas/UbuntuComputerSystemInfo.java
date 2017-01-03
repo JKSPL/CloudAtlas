@@ -1,10 +1,16 @@
 package pl.edu.mimuw.cloudatlas;
 
 import com.sun.management.OperatingSystemMXBean;
+import jdk.nashorn.internal.runtime.regexp.joni.Matcher;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.regex.Pattern;
 
 /**
  * Created by julek on 02-Jan-17.
@@ -30,7 +36,7 @@ public class UbuntuComputerSystemInfo implements SystemInfo, Runnable {
     OperatingSystemMXBean osMXBean;
     long delay;
     Thread updateThread;
-    
+
     UbuntuComputerSystemInfo(){
         osMXBean = (com.sun.management.OperatingSystemMXBean) ManagementFactory
                 .getOperatingSystemMXBean();
@@ -122,13 +128,31 @@ public class UbuntuComputerSystemInfo implements SystemInfo, Runnable {
         total_ram = osMXBean.getTotalPhysicalMemorySize();
         free_swap = osMXBean.getFreeSwapSpaceSize();
         total_swap = osMXBean.getTotalSwapSpaceSize();
-//        num_processes;
+        num_processes = countLines(executeCommand("ps aux"));
         num_cores = osMXBean.getAvailableProcessors();
         kernel_ver = osMXBean.getVersion();
-//        logged_users;
-//        dns_names;
+        logged_users = new HashSet<String>(Arrays.asList(executeCommand("users").replace("\n", "").split(" "))).size();
+        dns_names =  executeCommand("hostname").split("\n");
+        if(dns_names.length >= 3){
+            String[] tdns_names = new String[3];
+            for(int i = 0; i < 3; i++){
+                tdns_names[i] = dns_names[i];
+            }
+            dns_names = tdns_names;
+        }
     }
-
+    int countLines(String str) {
+        if(str == null || str.isEmpty())
+        {
+            return 0;
+        }
+        int lines = 1;
+        int pos = 0;
+        while ((pos = str.indexOf("\n", pos) + 1) != 0) {
+            lines++;
+        }
+        return lines;
+    }
     @Override
     synchronized public void run() {
         try{
@@ -140,5 +164,28 @@ public class UbuntuComputerSystemInfo implements SystemInfo, Runnable {
             System.out.println("close");
             return;
         }
+    }
+    String executeCommand(String command) {
+
+        StringBuffer output = new StringBuffer();
+
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+            BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            String line = "";
+            while ((line = reader.readLine())!= null) {
+                output.append(line + "\n");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return output.toString();
+
     }
 }
