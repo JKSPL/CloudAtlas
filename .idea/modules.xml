@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CloudAtlas.iml" filepath="$PROJECT_DIR$/CloudAtlas.iml" />
       <module fileurl="file://$PROJECT_DIR$/Fetcher/Fetcher.iml" filepath="$PROJECT_DIR$/Fetcher/Fetcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/QuerySigner/QuerySigner.iml" filepath="$PROJECT_DIR$/QuerySigner/QuerySigner.iml" />
     </modules>
   </component>
 </project>

@@ -7,6 +7,6 @@
 # course. It is intended for internal use only.
 #
 
-cd /home/jks/IdeaProjects/CloudAtlas/out/production/Fetcher/
+cd /home/jks/IdeaProjects/CloudAtlas/out/production/CloudAtlas/
 rmiregistry
 

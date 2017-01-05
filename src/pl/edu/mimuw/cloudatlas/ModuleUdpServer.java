@@ -12,7 +12,7 @@ import java.net.SocketException;
 /**
  * Created by julek on 30-Dec-16.
  */
-public class ModuleUdpServer extends Module implements Runnable {
+public class  ModuleUdpServer extends Module implements Runnable {
     static String name = "udpserver";
     static ModuleUdpServer instance = new ModuleUdpServer();
     DatagramSocket serverSocket;

@@ -14,7 +14,7 @@ import static java.lang.Thread.sleep;
 /**
  * Created by julek on 02-Jan-17.
  */
-public class    UbuntuComputerSystemInfo implements SystemInfo, Runnable {
+public class UbuntuComputerSystemInfo implements SystemInfo, Runnable {
     double cpu_load;
     long free_disk;
     long total_disk;

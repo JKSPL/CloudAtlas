@@ -131,9 +131,10 @@ public class Interpreter {
 			for(Statement s : program.liststatement_) {
 				try {
 					List<QueryResult> l = s.accept(new StatementInterpreter(), zmi);
-					for(QueryResult qr : l)
-						if(qr.getName() == null)
+					for(QueryResult qr : l) {
+						if (qr.getName() == null)
 							throw new IllegalArgumentException("All items in top-level SELECT must be aliased.");
+					}
 					results.addAll(l);
 				} catch(Exception exception) {
 					throw new InsideQueryException(PrettyPrinter.print(s), exception);

@@ -66,6 +66,7 @@ public class Agent {
             return false;
         }
         ModuleSystemInfo.getInstance().init();
+        ModuleAgent.getInstance().init();
         return true;
     }
     static boolean initExecutors(){
@@ -118,15 +119,5 @@ public class Agent {
         for(int i = 0; i < executorsCo; i++){
             threadsExecutors[i].start();
         }
-
-        //System.out.println(ModuleTimer.getInstance() == null);
-        //System.out.println(ModuleTimer.getInstance().ex == null);
-        //MessageCallback m = new MessageCallback(ModuleTimer.getInstance(), ModuleTimer.getInstance(), ModuleTimer.MSG_CALLBACK_PERIODIC, new CallbackPrint() ,1000);
-        //Module.sendMessage(m);
-        /*for(int i = 0; i < 1000; i++){
-            MessageCallback m = new MessageCallback(ModuleCommunication.getInstance(), ModuleTimer.getInstance(), ModuleTimer.MSG_CALLBACK_SECONDS, new CallbackPrint(), 3000 + i * 500);
-            MessageOverNetwork m2 = new MessageOverNetwork(m, "127.0.0.1", 8127, ModuleUdpSender.MSG_SEND_MESSAGE) ;
-            Module.sendMessage(m2);
-        }*/
     }
 }

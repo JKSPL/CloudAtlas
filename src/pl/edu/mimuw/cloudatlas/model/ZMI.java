@@ -30,8 +30,10 @@ import com.esotericsoftware.kryo.io.Output;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -44,7 +46,9 @@ public class ZMI implements Cloneable {
 	
 	private final List<ZMI> sons = new ArrayList<ZMI>();
 	private ZMI father;
-	
+
+	public Date timestamp;
+
 	/**
 	 * Creates a new ZMI with no father (the root zone) and empty sons list.
 	 */
@@ -62,8 +66,13 @@ public class ZMI implements Cloneable {
 	 */
 	public ZMI(ZMI father) {
 		this.father = father;
+		timestamp = new Date();
 	}
-	
+
+	public void pokeTimeStamp(){
+		timestamp = new Date();
+	}
+
 	/**
 	 * Gets a father of this ZMI in a tree.
 	 * 
@@ -137,6 +146,7 @@ public class ZMI implements Cloneable {
 	 */
 	public void printAttributes(PrintStream stream) {
 		stream.println(getPathName(this));
+		stream.println(this.timestamp.toString());
 		for(Entry<Attribute, Value> entry : attributes){
 			stream.println("    " + entry.getKey() + " : " + entry.getValue().getType() + " = " + entry.getValue());
 		}
@@ -153,6 +163,7 @@ public class ZMI implements Cloneable {
 	@Override
 	public ZMI clone() {
 		ZMI result = new ZMI(father);
+		result.timestamp = this.timestamp;
 		result.attributes.add(attributes.clone());
 		for(ZMI son : sons) {
 			ZMI sonClone = son.clone();
