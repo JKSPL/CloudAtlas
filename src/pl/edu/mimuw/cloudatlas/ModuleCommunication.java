@@ -1,6 +1,10 @@
 package pl.edu.mimuw.cloudatlas;
 
+import pl.edu.mimuw.cloudatlas.model.ValueContact;
+
 import java.net.SocketException;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Created by julek on 29-Dec-16.
@@ -8,13 +12,10 @@ import java.net.SocketException;
 public class ModuleCommunication extends Module {
     static String name = "communication";
     static ModuleCommunication instance = new ModuleCommunication();
-    Thread serverThread;
     public void init(int port) throws SocketException {
         super.init();
         ModuleUdpServer.getInstance().init(port);
         ModuleUdpSender.getInstance().init();
-        serverThread = new Thread(ModuleUdpServer.getInstance());
-        serverThread.start();
     }
     
     public static ModuleCommunication getInstance(){

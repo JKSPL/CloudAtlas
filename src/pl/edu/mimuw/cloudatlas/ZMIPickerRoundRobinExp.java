@@ -25,6 +25,9 @@ public class ZMIPickerRoundRobinExp extends ZMIPicker {
 
     @Override
     public PathName getNext() {
+        if(pq.isEmpty()){
+            return null;
+        }
         PathWithPriority p = pq.poll();
         p.priority += Math.pow(p.info.getComponents().size(), 2);
         pq.add(p);

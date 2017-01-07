@@ -8,5 +8,5 @@ import java.rmi.RemoteException;
  */
 public interface SigningInterface extends Remote {
     public byte[] signInstallQuery(String query, String name) throws RemoteException;
-    public byte[] signUninstallQuery(String query, String name) throws RemoteException;
+    public byte[] signUninstallQuery(String name) throws RemoteException;
 }

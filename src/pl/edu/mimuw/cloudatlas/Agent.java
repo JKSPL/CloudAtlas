@@ -1,13 +1,17 @@
 package pl.edu.mimuw.cloudatlas;
 
 import org.apache.commons.cli.*;
+import pl.edu.mimuw.cloudatlas.model.PathName;
+import pl.edu.mimuw.cloudatlas.model.ValueContact;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashSet;
 import java.util.Properties;
+import java.util.Scanner;
 
 //import org.apache.commons.cli.*;
 public class Agent {
@@ -67,6 +71,7 @@ public class Agent {
         }
         ModuleSystemInfo.getInstance().init();
         ModuleAgent.getInstance().init();
+        ModuleUdpServer.getInstance().start();
         return true;
     }
     static boolean initExecutors(){
@@ -118,6 +123,16 @@ public class Agent {
         }
         for(int i = 0; i < executorsCo; i++){
             threadsExecutors[i].start();
+        }
+        Scanner console = new Scanner(System.in);
+
+        while(true){
+            String s0 = console.next();
+            String s1 = console.next();
+            String s2 = console.next();
+            int s3 = Integer.parseInt(s2);
+            ValueContact c = new ValueContact(new PathName(s0), new InetSocketAddress(s1, s3));
+            ModuleAgent.getInstance().fallbackContacts.add(c);
         }
     }
 }

@@ -7,7 +7,6 @@ public class MessageOverNetwork extends Message {
     Message m;
     String host;
     int port;
-
     MessageOverNetwork(Message tm, String thost, int tport, int ttype) {
         super(tm.getSender(), ModuleUdpSender.getInstance(), ttype);
         m = tm;

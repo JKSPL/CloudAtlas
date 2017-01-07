@@ -1,6 +1,10 @@
 package pl.edu.mimuw.cloudatlas;
 
 import com.esotericsoftware.kryo.Kryo;
+import pl.edu.mimuw.cloudatlas.interpreter.QueryResult;
+import pl.edu.mimuw.cloudatlas.interpreter.query.Absyn.Program;
+import pl.edu.mimuw.cloudatlas.interpreter.query.Yylex;
+import pl.edu.mimuw.cloudatlas.interpreter.query.parser;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -17,13 +21,15 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by jks on 1/3/17.
  */
 public class QuerySigner implements SigningInterface {
-    HashSet<Query> installedQueries;
+    HashMap<String, String> installedQueries = new HashMap<>();
     private final static String ENCRYPTION_ALGORITHM = "RSA";
     private final static int NUM_KEY_BITS = 1024;
     static KeyPair keyPair = null;
@@ -105,14 +111,22 @@ public class QuerySigner implements SigningInterface {
     }
     @Override
     synchronized public byte[] signInstallQuery(String query, String name) throws RemoteException {
-        Query q = new Query(query, name);
-        if(installedQueries.contains(q)){
+        QueryInfo q = new QueryInfo(query, name);
+        if(installedQueries.containsKey(name)){
             return null;
         }
+        Yylex lex = new Yylex(new ByteArrayInputStream(query.getBytes()));
+        try {
+            new parser(lex).pProgram();
+        } catch (Exception e) {
+            return null;
+        }
+        //new parser(lex).pProgram();
+        installedQueries.put(query, name);
         return getSign(q);
     }
     String DIGEST_ALGORITHM = "SHA-1";
-    public byte [] getSign(Query q){
+    public byte [] getSign(QueryInfo q){
         Kryo k = new Kryo();
         byte[] bytes = q.serialize();
         try {
@@ -131,11 +145,11 @@ public class QuerySigner implements SigningInterface {
     }
 
     @Override
-    synchronized public byte[] signUninstallQuery(String query, String name) throws RemoteException {
-        Query q = new Query(query, name);
-        if(!installedQueries.contains(q)){
+    synchronized public byte[] signUninstallQuery(String name) throws RemoteException {
+        if(!installedQueries.containsKey(name)){
             return null;
         }
+        QueryInfo q = new QueryInfo(installedQueries.get(name), name);
         return getSign(q);
     }
 }

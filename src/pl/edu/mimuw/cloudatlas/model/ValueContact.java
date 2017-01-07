@@ -25,6 +25,7 @@
 package pl.edu.mimuw.cloudatlas.model;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 /**
  * A class that represents a contact to a node. The contact consists of a full path name of this node and its IP
@@ -34,19 +35,33 @@ import java.net.InetAddress;
  */
 public class ValueContact extends Value {
 	private final PathName name;
-	private final InetAddress address;
-	
+	String hostName;
+	Integer port;
+	//private final InetSocketAddress address;
+
 	/**
 	 * Constructs a new <code>ValueContact</code> with the specified path name and IP address.
 	 * 
 	 * @param name the full path name of a node
 	 * @param address the IP address of the node
 	 */
-	public ValueContact(PathName name, InetAddress address) {
+	public ValueContact(PathName name, InetSocketAddress address) {
 		this.name = name;
-		this.address = address;
+		this.hostName = address.getHostName();
+		this.port = address.getPort();
 	}
-	
+
+	@Override
+	public boolean equals(Object object) {
+		if(object == null)
+			return false;
+		if(getClass() != object.getClass())
+			return false;
+		return name.equals(((ValueContact)object).name)
+				&& hostName.equals(((ValueContact)object).hostName)
+				&& port.equals(((ValueContact)object).port);
+	}
+
 	@Override
 	public Value getDefaultValue() {
 		return new ValueContact(null, null);
@@ -66,8 +81,8 @@ public class ValueContact extends Value {
 	 * 
 	 * @return the IP address of a node
 	 */
-	public InetAddress getAddress() {
-		return address;
+	public InetSocketAddress getAddress() {
+		return new InetSocketAddress(hostName, port);
 	}
 	
 	@Override
@@ -84,7 +99,7 @@ public class ValueContact extends Value {
 				if(isNull())
 					return ValueString.NULL_STRING;
 				else
-					return new ValueString("(" + name.toString() + ", " + address.toString() + ")");
+					return new ValueString("(" + name.toString() + ", " + new InetSocketAddress(hostName, port).toString() + ")");
 			default:
 				throw new UnsupportedConversionException(getType(), type);
 		}
@@ -92,12 +107,13 @@ public class ValueContact extends Value {
 	
 	@Override
 	public boolean isNull() {
-		return name == null || address == null;
+		return name == null || hostName == null || port == null;
 	}
 	
 	private ValueContact()
 	{
 		this.name = null;
-		this.address = null;
+		this.hostName = null;
+		this.port = null;
 	}
 }

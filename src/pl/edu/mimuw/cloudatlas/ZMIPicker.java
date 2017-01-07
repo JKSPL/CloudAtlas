@@ -8,7 +8,7 @@ import java.util.HashSet;
  * Created by jks on 1/5/17.
  */
 public abstract class ZMIPicker {
-    HashSet<PathName> paths;
+    HashSet<PathName> paths = new HashSet<>();
     final public void put(PathName p){
         if(!paths.contains(p)){
             paths.add(p);

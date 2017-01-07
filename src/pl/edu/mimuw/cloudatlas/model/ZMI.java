@@ -31,10 +31,7 @@ import com.esotericsoftware.kryo.io.Output;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.security.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -66,7 +63,7 @@ public class ZMI implements Cloneable {
 	 */
 	public ZMI(ZMI father) {
 		this.father = father;
-		timestamp = new Date();
+		timestamp = new Date(0);
 	}
 
 	public void pokeTimeStamp(){

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Client/Client.iml" filepath="$PROJECT_DIR$/Client/Client.iml" />
       <module fileurl="file://$PROJECT_DIR$/CloudAtlas.iml" filepath="$PROJECT_DIR$/CloudAtlas.iml" />
       <module fileurl="file://$PROJECT_DIR$/Fetcher/Fetcher.iml" filepath="$PROJECT_DIR$/Fetcher/Fetcher.iml" />
       <module fileurl="file://$PROJECT_DIR$/QuerySigner/QuerySigner.iml" filepath="$PROJECT_DIR$/QuerySigner/QuerySigner.iml" />

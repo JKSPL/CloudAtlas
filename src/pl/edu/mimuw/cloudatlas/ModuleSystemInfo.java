@@ -1,7 +1,5 @@
 package pl.edu.mimuw.cloudatlas;
 
-import java.io.File;
-
 import java.lang.management.ManagementFactory;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -9,7 +7,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.sun.management.OperatingSystemMXBean;
@@ -72,7 +69,7 @@ public class ModuleSystemInfo extends Module {
     int i = 0;
     void update(){
 
-        System.out.println("update started" + i);
+        //System.out.println("update started" + i);
         i++;
 
         double tcpu_load = 0;
@@ -98,29 +95,29 @@ public class ModuleSystemInfo extends Module {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        System.out.println("update finished");
+        //System.out.println("update finished");
     }
     @Override
     public void receiveMessage(Message m){
         if(m.messageType == MSG_UPDATE_INFO){
             update();
-            MessageAttributes msg = new MessageAttributes(getInstance(), ModuleAgent.getInstance(), ModuleAgent.MSG_SYSTEM_DATA);
-            msg.hm.put(new Attribute("cpu_load"), new ValueDouble(cpu_load));
-            msg.hm.put(new Attribute("free_disk"), new ValueInt(free_disk));
-            msg.hm.put(new Attribute("total_disk"), new ValueInt(total_disk));
-            msg.hm.put(new Attribute("free_ram"), new ValueInt(free_ram));
-            msg.hm.put(new Attribute("total_ram"), new ValueInt(total_ram));
-            msg.hm.put(new Attribute("free_swap"), new ValueInt(free_swap));
-            msg.hm.put(new Attribute("total_swap"), new ValueInt(total_swap));
-            msg.hm.put(new Attribute("num_processes"), new ValueInt(num_processes));
-            msg.hm.put(new Attribute("num_cores"), new ValueInt(num_cores));
-            msg.hm.put(new Attribute("kernel_ver"), new ValueString(kernel_ver));
-            msg.hm.put(new Attribute("logged_users"), new ValueInt(logged_users));
+            MessageZMISystemInfo msg = new MessageZMISystemInfo(getInstance(), ModuleAgent.getInstance(), ModuleAgent.MSG_SYSTEM_DATA);
+            msg.zmiAttrs.put(new Attribute("cpu_load"), new ValueDouble(cpu_load));
+            msg.zmiAttrs.put(new Attribute("free_disk"), new ValueInt(free_disk));
+            msg.zmiAttrs.put(new Attribute("total_disk"), new ValueInt(total_disk));
+            msg.zmiAttrs.put(new Attribute("free_ram"), new ValueInt(free_ram));
+            msg.zmiAttrs.put(new Attribute("total_ram"), new ValueInt(total_ram));
+            msg.zmiAttrs.put(new Attribute("free_swap"), new ValueInt(free_swap));
+            msg.zmiAttrs.put(new Attribute("total_swap"), new ValueInt(total_swap));
+            msg.zmiAttrs.put(new Attribute("num_processes"), new ValueInt(num_processes));
+            msg.zmiAttrs.put(new Attribute("num_cores"), new ValueInt(num_cores));
+            msg.zmiAttrs.put(new Attribute("kernel_ver"), new ValueString(kernel_ver));
+            msg.zmiAttrs.put(new Attribute("logged_users"), new ValueInt(logged_users));
             List<Value> l = new ArrayList<>();
             for(String s : dns_names){
                 l.add(new ValueString(s));
             }
-            msg.hm.put(new Attribute("dns_names"), new ValueList(
+            msg.zmiAttrs.put(new Attribute("dns_names"), new ValueList(
                     new ValueList(l, TypePrimitive.STRING),
                     TypePrimitive.STRING));
             Module.sendMessage(msg);

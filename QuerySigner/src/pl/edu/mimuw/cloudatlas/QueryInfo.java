@@ -2,17 +2,16 @@ package pl.edu.mimuw.cloudatlas;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 import java.io.ByteArrayOutputStream;
 
 /**
  * Created by jks on 1/3/17.
  */
-public class Query {
+public class QueryInfo {
     String name;
     String query;
-    Query(String tn, String tq){
+    QueryInfo(String tn, String tq){
         name = tn;
         query =tn;
     }
@@ -23,5 +22,15 @@ public class Query {
         kryo.writeObject(output, this);
         output.close();
         return b.toByteArray();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null)
+            return false;
+        if(getClass() != obj.getClass())
+            return false;
+        return name.equals(((QueryInfo)obj).name) &&
+                query.equals(((QueryInfo)obj).query);
     }
 }
