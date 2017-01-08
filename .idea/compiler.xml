@@ -7,10 +7,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Client" />
+        <module name="CloudAtlas" />
+        <module name="QuerySigner" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Client" target="1.8" />
+      <module name="CloudAtlas" target="1.8" />
+      <module name="QuerySigner" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
