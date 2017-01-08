@@ -61,6 +61,7 @@ public class ModuleSystemInfo extends Module {
 
     public void initRMI(){
         try {
+            debug(Util.p.getProperty("agentserver", "localhost"));
             registry = LocateRegistry.getRegistry(Util.p.getProperty("agentserver", "localhost"));
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -118,17 +119,9 @@ public class ModuleSystemInfo extends Module {
             }
             msg.zmiAttrs.put(new Attribute("dns_names"),
                     new ValueList(l, TypePrimitive.STRING));
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            Output output = new Output(stream);
-            ex.kryo.writeClassAndObject(output, msg.zmiAttrs);
-            output.close();
-            byte [] s = stream.toByteArray();
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(s);
-            Input input = new Input (inputStream);
-            msg.zmiAttrs = (HashMap<Attribute, Value>) ex.kryo.readClassAndObject(input);
             Module.sendMessage(msg);
-        } catch (RemoteException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             debug("fetcher is dead :(");
             initRMI();
             debug("maybe restored now...");
@@ -136,7 +129,7 @@ public class ModuleSystemInfo extends Module {
     }
     @Override
     public void receiveMessage(Message m){
-        if(m.messageType == MSG_UPDATE_INFO){
+        if(m.messageType == MSG_UPDATE_INFO){   
             update();
         }
     }

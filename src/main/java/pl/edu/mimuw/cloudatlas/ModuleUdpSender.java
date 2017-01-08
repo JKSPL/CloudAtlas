@@ -47,12 +47,12 @@ public class ModuleUdpSender extends Module {
             byte [] out = tm.m.serialize(ex.kryo);
             List<MessageBlob> l = MessageBlob.divideIntoBlobs(out);
             try {
-                debug("Sending to: " + host);
-                debug("Port: " + Integer.toString(port));
+                //debug("Sending to: " + host);
+                //debug("Port: " + Integer.toString(port));
                 InetAddress address = InetAddress.getByName(host);
                 for(MessageBlob mblob: l){
                     byte[] out2 = mblob.serialize(ex.kryo);
-                    debug(" sending " + out2.length + " bytes");
+                    //debug(" sending " + out2.length + " bytes");
                     DatagramPacket packet = new DatagramPacket(out2, out2.length, address, port);
                     dsocket.send(packet);
                 }

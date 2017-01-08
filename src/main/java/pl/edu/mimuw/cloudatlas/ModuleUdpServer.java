@@ -41,7 +41,6 @@ public class  ModuleUdpServer extends Module implements Runnable {
 
     @Override
     public void run() {
-        try{
             while(true){
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 try {
@@ -59,7 +58,7 @@ public class  ModuleUdpServer extends Module implements Runnable {
                         }
                         buffer.get(m.id).add(m);
                         Message msg = null;
-                        debug(m.id + ": " + Integer.toString(m.part) + "/" + Integer.toString(m.parts));
+                        //debug(m.id + ": " + Integer.toString(m.part) + "/" + Integer.toString(m.parts));
                         if(buffer.get(m.id).size() == m.parts){
                             msg = MessageBlob.combine(buffer.get(m.id), ex.kryo);
                             buffer.remove(m.id);
@@ -67,15 +66,11 @@ public class  ModuleUdpServer extends Module implements Runnable {
                             Module.sendMessage(msg);
                         }
                     }
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                    wait(500);
                     continue;
                 }
             }
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        }
     }
     @Override
     synchronized public void receiveMessage(Message m){

@@ -102,7 +102,7 @@ public class Main {
 					zmi.getAttributes().addOrChange(r.getName(), r.getValue());
 				}
 			} catch(InterpreterException exception) {
-				throw new Exception("Bad");
+				//throw new Exception("Bad");
 			}
 		}
 	}

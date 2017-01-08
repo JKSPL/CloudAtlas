@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * Created by jks on 1/5/17.
  */
 public class MessageBlob {
-    static int maxSize = 450;
+    static int maxSize = 200;
     byte[] blob;
     int part;
     int parts;

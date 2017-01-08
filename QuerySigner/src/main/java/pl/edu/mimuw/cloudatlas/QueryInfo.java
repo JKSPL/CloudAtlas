@@ -9,6 +9,9 @@ import java.io.ByteArrayOutputStream;
  * Created by jks on 1/3/17.
  */
 public class QueryInfo {
+    QueryInfo(){
+
+    }
     String name;
     String query;
     QueryInfo(String tn, String tq){

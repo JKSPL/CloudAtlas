@@ -311,7 +311,7 @@ public class ModuleAgent extends Module implements AgentInterface {
             restoreMyInfo();
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            debug("Query: " + s + " failed");
             return false;
         }
     }
@@ -386,6 +386,7 @@ public class ModuleAgent extends Module implements AgentInterface {
             for(Map.Entry<QueryInfo, Date> entry : installedQueries.entrySet()){
                 if(!revokedQueries.containsKey(entry.getKey())
                         || revokedQueries.get(entry.getKey()).before(entry.getValue())){
+                    debug("Executing: " + entry.getKey().query);
                     executeQuery(entry.getKey().query);
                 }
             }
@@ -444,15 +445,19 @@ public class ModuleAgent extends Module implements AgentInterface {
                     }
                 }
             } else{
-                ValueSet s = (ValueSet) path2ZMI.get(chosen).getAttributes().get("contacts");
-                int r = ThreadLocalRandom.current().nextInt(s.size());
-                int i = 0;
-                for(Value c: s){
-                    if(i >= r){
-                        contact = (ValueContact)c;
-                        break;
+                try{
+                    ValueSet s = (ValueSet) path2ZMI.get(chosen).getAttributes().get("contacts");
+                    int r = ThreadLocalRandom.current().nextInt(s.size());
+                    int i = 0;
+                    for(Value c: s){
+                        if(i >= r){
+                            contact = (ValueContact)c;
+                            break;
+                        }
+                        i++;
                     }
-                    i++;
+                } catch(Exception e){
+                    
                 }
             }
             if(contact != null){
@@ -526,7 +531,7 @@ public class ModuleAgent extends Module implements AgentInterface {
         msg.revokedQueries = qmap2;
     }
 
-    MessageZMITimestamps getGossipTimestamps(PathName p){
+   synchronized MessageZMITimestamps getGossipTimestamps(PathName p){
         HashMap<PathName, Date> res = gatherInterestingTimeStamps(p);;
         debug("for " + p.toString());
         debug("following interesting:");
@@ -538,8 +543,9 @@ public class ModuleAgent extends Module implements AgentInterface {
         for(Map.Entry<QueryInfo, Date> e: installedQueries.entrySet()){
             msg.queryMap.put(e.getKey().name, e.getValue());
         }
-        for(Map.Entry<QueryInfo, Date> e: installedQueries.entrySet()){
-            if(msg.queryMap.containsKey(e.getKey().name) && msg.queryMap.get(e.getKey()).before(e.getValue())){
+        for(Map.Entry<QueryInfo, Date> e: revokedQueries.entrySet()){
+            System.out.println(msg.queryMap == null);
+            if(!msg.queryMap.containsKey(e.getKey().name) || msg.queryMap.get(e.getKey().name).before(e.getValue())){
                 msg.queryMap.put(e.getKey().name, e.getValue());
             }
         }
@@ -548,11 +554,11 @@ public class ModuleAgent extends Module implements AgentInterface {
 
 
 
-    MessageZMIAttributes getGossipAttributes(PathName p, MessageZMITimestamps m){
+    synchronized MessageZMIAttributes getGossipAttributes(PathName p, MessageZMITimestamps m){
         return getGossipAttributes(p, m.zmiMap, m.queryMap);
     }
 
-    MessageZMIAttributes getGossipAttributes(PathName p, MessageZMIAttributes m){
+    synchronized MessageZMIAttributes getGossipAttributes(PathName p, MessageZMIAttributes m){
         HashMap<String, Date> queryMap = new HashMap<>();
         for(Map.Entry<QueryInfo, Date> e : m.installedQueries.entrySet()){
             queryMap.put(e.getKey().name, e.getValue());
@@ -566,7 +572,7 @@ public class ModuleAgent extends Module implements AgentInterface {
     }
 
 
-    MessageZMIAttributes getGossipAttributes(PathName p, Map<PathName, Date> zmiMap, Map<String, Date> queryMap){
+    synchronized MessageZMIAttributes getGossipAttributes(PathName p, Map<PathName, Date> zmiMap, Map<String, Date> queryMap){
         HashMap<PathName, AttributesMap> res = gatherInterestingAttributes(p);
         MessageZMIAttributes msg = new MessageZMIAttributes(getInstance(), getInstance(), MSG_ATTRIBUTES, myContact);
         for(Map.Entry<QueryInfo, Date> e: installedQueries.entrySet()){
@@ -588,7 +594,6 @@ public class ModuleAgent extends Module implements AgentInterface {
                 msg.zmiStamps.put(e.getKey(), stamp);
             }
         }
-        debug("OK!");
         Message.deserialize(ex.kryo, msg.serialize(ex.kryo));
         return msg;
     }
