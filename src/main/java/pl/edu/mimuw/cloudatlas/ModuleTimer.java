@@ -10,7 +10,7 @@ import static java.lang.Long.max;
  * Created by julek on 29-Dec-16.
  */
 public class ModuleTimer extends Module implements Runnable {
-    public static int MSG_CALLBACK_SECONDS = 1;
+    public static int MSG_CALLBACK_ONCE = 1;
     public static int MSG_CALLBACK_PERIODIC = 2;
     
     public static String name = "timer";
@@ -35,7 +35,7 @@ public class ModuleTimer extends Module implements Runnable {
     @Override
     public void receiveMessage(Message m) {
         synchronized (this){
-            if(m.messageType == MSG_CALLBACK_SECONDS || m.messageType == MSG_CALLBACK_PERIODIC){
+            if(m.messageType == MSG_CALLBACK_ONCE || m.messageType == MSG_CALLBACK_PERIODIC){
                 MessageCallback tm = (MessageCallback) m;
                 mqueue.add(new MessageWithPriority(new Date().getTime() + tm.delay, m));
                 notify();

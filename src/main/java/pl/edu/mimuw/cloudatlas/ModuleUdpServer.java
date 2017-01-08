@@ -1,9 +1,5 @@
 package pl.edu.mimuw.cloudatlas;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -22,10 +18,12 @@ public class  ModuleUdpServer extends Module implements Runnable {
     HashMap<Integer, Set<MessageBlob>> buffer = new HashMap<>();
     Thread serverThread;
     int port;
+    int destroyPeriod;
     public void init(int port) throws SocketException {
         super.init();
         this.port = port;
         serverSocket = new DatagramSocket(port);
+        destroyPeriod = Integer.parseInt(Util.p.getProperty("destroyperiod", "1000"));
     }
     public static ModuleUdpServer getInstance(){
         return instance;
@@ -48,24 +46,26 @@ public class  ModuleUdpServer extends Module implements Runnable {
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 try {
                     serverSocket.receive(receivePacket);
-                    debug("gotcha");
-                    Date d = new Date();
-                    if(receivePacket.getLength() > 500){
-                        continue;
-                    }
-                    MessageBlob m = MessageBlob.deserialize(ex.kryo, receivePacket.getData());
-                    if(!buffer.containsKey(m.id)){
-                        buffer.put(m.id, new TreeSet<>(Comparator.comparingInt(o -> o.part)));
-                    }
-                    buffer.get(m.id).add(m);
-                    Message msg = null;
-                    debug(Integer.toString(m.part) + "/" + Integer.toString(m.parts));
-                    if(buffer.get(m.id).size() == m.parts){
-                        debug("lololol");
-                        msg = MessageBlob.combine(buffer.get(m.id), ex.kryo);
-                        buffer.remove(m.id);
-                        msg.stamp(d);
-                        Module.sendMessage(msg);
+                    synchronized (this){
+                        Date d = new Date();
+                        if(receivePacket.getLength() > 500){
+                            continue;
+                        }
+                        MessageBlob m = MessageBlob.deserialize(ex.kryo, receivePacket.getData());
+                        if(!buffer.containsKey(m.id)){
+                            buffer.put(m.id, new TreeSet<>(Comparator.comparingInt(o -> o.part)));
+                            MessageInt mint = new MessageInt(getInstance(), getInstance(), MSG_DESTROY, m.id);
+                            Message tm = new MessageCallback(getInstance(), ModuleTimer.getInstance(), ModuleTimer.MSG_CALLBACK_ONCE, new CallbackSendMessage(mint), destroyPeriod);
+                        }
+                        buffer.get(m.id).add(m);
+                        Message msg = null;
+                        debug(m.id + ": " + Integer.toString(m.part) + "/" + Integer.toString(m.parts));
+                        if(buffer.get(m.id).size() == m.parts){
+                            msg = MessageBlob.combine(buffer.get(m.id), ex.kryo);
+                            buffer.remove(m.id);
+                            msg.stamp(d);
+                            Module.sendMessage(msg);
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -75,6 +75,13 @@ public class  ModuleUdpServer extends Module implements Runnable {
             }
         } catch (InterruptedException e){
             e.printStackTrace();
+        }
+    }
+    @Override
+    synchronized public void receiveMessage(Message m){
+        if(m.messageType == MSG_DESTROY){
+            MessageInt msg = (MessageInt)m;
+            buffer.remove(id);
         }
     }
 }
