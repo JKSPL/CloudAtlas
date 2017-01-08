@@ -34,4 +34,9 @@ public class QueryInfo {
         return name.equals(((QueryInfo)obj).name) &&
                 query.equals(((QueryInfo)obj).query);
     }
+
+    @Override
+    public int hashCode(){
+        return (name + ";" + query + "@").hashCode();
+    }
 }

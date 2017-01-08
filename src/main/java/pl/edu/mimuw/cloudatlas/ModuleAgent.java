@@ -322,7 +322,6 @@ public class ModuleAgent extends Module implements AgentInterface {
         if(m instanceof MessageZMIAttributes){
             MessageZMIAttributes m1 = (MessageZMIAttributes )m;
             for(Map.Entry<PathName, AttributesMap> e : m1.zmiAttrs.entrySet()){
-                debug(e.getValue().toString());
                 assert(e.getValue() != null);
             }
         }
@@ -405,7 +404,6 @@ public class ModuleAgent extends Module implements AgentInterface {
                 }
             }
         } else if(m.messageType == MSG_TIMESTAMPS){
-            //debug("Timestamps info");
             MessageZMITimestamps msg = (MessageZMITimestamps)m;
             updateMessageForGTP(msg);
             if(msg.noreply){
@@ -419,7 +417,6 @@ public class ModuleAgent extends Module implements AgentInterface {
                 sendToContact(myMsg, msg.sender);
             }
         } else if(m.messageType == MSG_ATTRIBUTES){
-            //debug("Attribute info");
             MessageZMIAttributes msg = (MessageZMIAttributes)m;
             updateMessageForGTP(msg);
             if(!msg.noreply){
@@ -434,7 +431,6 @@ public class ModuleAgent extends Module implements AgentInterface {
             ValueContact contact = null;
             if(chosen == null){
                 if(fallbackContacts.isEmpty()){
-                    //debug("no fallback contacts!");
                     return;
                 } else{
                     int r = ThreadLocalRandom.current().nextInt(fallbackContacts.size());
@@ -619,11 +615,7 @@ public class ModuleAgent extends Module implements AgentInterface {
         if(!verify(q, Base64.getDecoder().decode(sign))){
             return false;
         };
-        debug(q.name + ", " + q.query);
         installedQueries.put(q, new Date());
-        for(Map.Entry<QueryInfo, Date> e : installedQueries.entrySet()){
-            debug(e.getKey().name + " " + e.getKey().query + " " + e.getValue());
-        }
         return true;
     }
 
@@ -716,11 +708,9 @@ public class ModuleAgent extends Module implements AgentInterface {
         });
         Spark.post("/getzmidata/", (request, response) -> {
             String path = request.queryParams("path");
-            debug("Requested " + path);
             return getZMIData(path);
         });
         Spark.get("/getqueries/", (request, response) -> {
-            debug("queries plx");
             return getQueries();
         });
         Spark.post("/addcontact/", (request, response) -> {

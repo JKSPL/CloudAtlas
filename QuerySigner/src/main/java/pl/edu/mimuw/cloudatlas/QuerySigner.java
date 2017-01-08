@@ -143,7 +143,7 @@ public class QuerySigner implements SigningInterface {
 
     synchronized public byte[] signInstallQuery(String query, String name) throws RemoteException {
         QueryInfo q = new QueryInfo(name, query);
-        if(installedQueries.containsKey(name)){
+        if(installedQueries.containsKey(name) && !installedQueries.get(name).equals(query)){
             return null;
         }
         Yylex lex = new Yylex(new ByteArrayInputStream(query.getBytes()));
@@ -161,9 +161,11 @@ public class QuerySigner implements SigningInterface {
         if(query2.indexOf("name") != -1){
             return null;
         }
-        //new parser(lex).pProgram();
-        installedQueries.put(query, name);
-        return getSign(q);
+        byte[] sign = getSign(q);
+        if(sign != null){
+            installedQueries.put(name, query);
+        }
+        return sign;
     }
     String DIGEST_ALGORITHM = "SHA-1";
     public byte [] getSign(QueryInfo q){
