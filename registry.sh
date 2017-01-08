@@ -7,6 +7,6 @@
 # course. It is intended for internal use only.
 #
 
-cd /home/jks/IdeaProjects/CloudAtlas/out/production/CloudAtlas/
+cd target/classes/
 rmiregistry
 

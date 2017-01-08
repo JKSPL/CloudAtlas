@@ -25,7 +25,6 @@ public class ModuleSystemInfo extends Module {
     static int MSG_UPDATE_INFO = 1;
     static String name = "systeminfo";
     static ModuleSystemInfo instance = new ModuleSystemInfo();
-    OperatingSystemMXBean osMXBean;
     double cpu_load;
     long free_disk;
     long total_disk;
@@ -52,6 +51,15 @@ public class ModuleSystemInfo extends Module {
 
     public void init(){
         super.init();
+        initRMI();
+        maxDequeMembers = Integer.max(1, Integer.parseInt(Util.p.getProperty("cpuloadgatherunits", "4")));
+        systemUpdatePeriod = Integer.max(100, Integer.parseInt(Util.p.getProperty("systemupdateperiod", "1000")));
+        Message m = new Message(ModuleTimer.getInstance(), getInstance(), MSG_UPDATE_INFO);
+        CallbackSendMessage csm = new CallbackSendMessage(m);
+        Module.sendMessage(new MessageCallback(getInstance(), ModuleTimer.getInstance(), ModuleTimer.MSG_CALLBACK_PERIODIC, csm, systemUpdatePeriod));
+    }
+
+    public void initRMI(){
         try {
             registry = LocateRegistry.getRegistry(Util.p.getProperty("agentserver", "localhost"));
         } catch (RemoteException e) {
@@ -64,16 +72,10 @@ public class ModuleSystemInfo extends Module {
         } catch (NotBoundException e) {
             e.printStackTrace();
         }
-        osMXBean = (com.sun.management.OperatingSystemMXBean) ManagementFactory
-                .getOperatingSystemMXBean();
-        maxDequeMembers = Integer.max(1, Integer.parseInt(Util.p.getProperty("cpuloadgatherunits", "4")));
-        systemUpdatePeriod = Integer.max(100, Integer.parseInt(Util.p.getProperty("systemupdateperiod", "1000")));
-        Message m = new Message(ModuleTimer.getInstance(), getInstance(), MSG_UPDATE_INFO);
-        CallbackSendMessage csm = new CallbackSendMessage(m);
-        Module.sendMessage(new MessageCallback(getInstance(), ModuleTimer.getInstance(), ModuleTimer.MSG_CALLBACK_PERIODIC, csm, systemUpdatePeriod));
     }
+
     int i = 0;
-    void update(){
+    synchronized void update(){
 
         //System.out.println("update started" + i);
         i++;
@@ -98,15 +100,6 @@ public class ModuleSystemInfo extends Module {
             kernel_ver = stub.getKernelVer();
             logged_users = stub.getLoggedUsers();
             dns_names = stub.getDnsNames();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        //System.out.println("update finished");
-    }
-    @Override
-    public void receiveMessage(Message m){
-        if(m.messageType == MSG_UPDATE_INFO){
-            update();
             MessageZMISystemInfo msg = new MessageZMISystemInfo(getInstance(), ModuleAgent.getInstance(), ModuleAgent.MSG_SYSTEM_DATA);
             msg.zmiAttrs.put(new Attribute("cpu_load"), new ValueDouble(cpu_load));
             msg.zmiAttrs.put(new Attribute("free_disk"), new ValueInt(free_disk));
@@ -125,7 +118,6 @@ public class ModuleSystemInfo extends Module {
             }
             msg.zmiAttrs.put(new Attribute("dns_names"),
                     new ValueList(l, TypePrimitive.STRING));
-//            debug("ok");
 
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             Output output = new Output(stream);
@@ -135,10 +127,17 @@ public class ModuleSystemInfo extends Module {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(s);
             Input input = new Input (inputStream);
             msg.zmiAttrs = (HashMap<Attribute, Value>) ex.kryo.readClassAndObject(input);
-
-
-//            debug("ok2");
             Module.sendMessage(msg);
+        } catch (RemoteException e) {
+            debug("fetcher is dead :(");
+            initRMI();
+            debug("maybe restored now...");
+        }
+    }
+    @Override
+    public void receiveMessage(Message m){
+        if(m.messageType == MSG_UPDATE_INFO){
+            update();
         }
     }
     static ModuleSystemInfo getInstance(){
